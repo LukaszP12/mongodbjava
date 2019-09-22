@@ -1,6 +1,8 @@
 import com.mongodb.ClientSessionOptions;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.client.*;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import org.bson.Document; // bson to biblioteka MongoDB
 import org.bson.codecs.DocumentCodec;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.mongodb.client.model.Updates.*;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
@@ -35,19 +38,23 @@ public class App {
         read(mongoCollection);
         readByParam(mongoCollection, "Mark","BMW");
         delete(mongoCollection,"Mark","BMW");
+        update(mongoCollection);
 
     }
 
     private static void update(MongoCollection mongoCollection){
 
-        Document document = new Document();
+       /* Document document = new Document();
         document.put("Mark","Audi");
         Document documentFound = (Document) mongoCollection.find(document).first();
 
         Document documentUpdated = new Document();
-        documentUpdated.put("Audi", "A2");
-        documentUpdated.put("Color","Black");
-        mongoCollection.updateOne(document,documentUpdated);
+        documentUpdated.put("Model", "A2");
+        documentUpdated.put("Color","Black"); */
+
+        Bson eq = Filters.eq("Mark","Audi");
+        Bson newDocument = combine(set("Model","A2"), set("Colour","Black"));
+        mongoCollection.updateOne(eq,newDocument);
     }
 
     private static void delete(MongoCollection mongoCollection, String param, Object value) {
